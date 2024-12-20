@@ -1,0 +1,132 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Rooms - Hotel Management{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">Rooms</h1>
+        <a href="{% url 'core:room_add' %}" class="btn btn-primary">Add New Room</a>
+    </div>
+
+    <!-- Search Bar -->
+    <form method="GET" action="" id="search-form" class="mb-4">
+        <div class="input-group">
+            <input type="text" id="search-input" name="search" class="form-control" 
+                   placeholder="Search by room number or type" 
+                   value="{{ search_query }}">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </div>
+    </form>
+
+    <!-- Filters for Room Type, Status, and Price -->
+    <form method="GET" action="" class="mb-4">
+        <div class="row">
+            <div class="col-md-3 col-sm-12 mb-2">
+                <select name="type" class="form-control">
+                    <option value="">All Types</option>
+                    <option value="Single" {% if room_type == "Single" %}selected{% endif %}>Single</option>
+                    <option value="Double" {% if room_type == "Double" %}selected{% endif %}>Double</option>
+                    <option value="Suite" {% if room_type == "Suite" %}selected{% endif %}>Suite</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-sm-12 mb-2">
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="Available" {% if status == "Available" %}selected{% endif %}>Available</option>
+                    <option value="Booked" {% if status == "Booked" %}selected{% endif %}>Booked</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-sm-12 mb-2">
+                <input type="number" name="min_price" class="form-control" placeholder="Min Price" value="{{ min_price }}">
+            </div>
+            <div class="col-md-3 col-sm-12 mb-2">
+                <input type="number" name="max_price" class="form-control" placeholder="Max Price" value="{{ max_price }}">
+            </div>
+            <div class="col-12 text-center mt-2">
+                <button type="submit" class="btn btn-outline-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <div id="room-list">
+        <div class="row">
+            {% for room in page_obj %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">Room {{ room.number }}</h5>
+                        <p class="card-text">
+                            <strong>Type:</strong> {{ room.type }}<br>
+                            <strong>Status:</strong> 
+                            <span class="badge {% if room.status == 'Available' %}bg-success{% else %}bg-danger{% endif %}">{{ room.status }}</span>
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'core:room_update' room.id %}" class="btn btn-sm btn-warning">Edit</a>
+                            <form method="POST" action="{% url 'core:room_delete' room.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted">No rooms found.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination controls -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&type={{ room_type }}&status={{ status }}&min_price={{ min_price }}&max_price={{ max_price }}">Previous</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    {% endif %}
+
+                    {% for page_num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_num == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?page={{ page_num }}&search={{ search_query }}&type={{ room_type }}&status={{ status }}&min_price={{ min_price }}&max_price={{ max_price }}">{{ page_num }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&type={{ room_type }}&status={{ status }}&min_price={{ min_price }}&max_price={{ max_price }}">Next</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Handle AJAX search
+    const searchInput = document.getElementById('search-input');
+    const searchForm = document.getElementById('search-form');
+    const roomListContainer = document.getElementById('room-list');
+
+    searchForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent form submission
+        const searchQuery = searchInput.value;
+
+        // Perform an AJAX request to fetch filtered results
+        fetch(`/rooms/ajax/?search=${searchQuery}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            roomListContainer.innerHTML = data.html; // Replace room list content
+        })
+        .catch(error => {
+            console.error('Error fetching room data:', error);
+        });
+    });
+</script>
+{% endblock %}

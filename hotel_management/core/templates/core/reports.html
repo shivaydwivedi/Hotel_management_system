@@ -1,0 +1,111 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Reporting and Analytics - Hotel Management{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="fw-bold mb-4">Reporting and Analytics</h1>
+
+    <!-- Room Occupancy Report -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title">Room Occupancy Report</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Total Rooms:</strong> {{ total_rooms }}</p>
+            <p><strong>Occupied Rooms:</strong> {{ occupied_rooms }}</p>
+            <p><strong>Available Rooms:</strong> {{ available_rooms }}</p>
+        </div>
+    </div>
+
+    <!-- Booking Statistics -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title">Booking Statistics</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Total Bookings:</strong> {{ total_bookings }}</p>
+            <p><strong>Confirmed Bookings:</strong> {{ confirmed_bookings }}</p>
+            <p><strong>Cancelled Bookings:</strong> {{ cancelled_bookings }}</p>
+            <p><strong>Completed Bookings:</strong> {{ completed_bookings }}</p>
+        </div>
+    </div>
+
+    <!-- Revenue Report -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title">Revenue Report</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Total Revenue:</strong> ${{ total_revenue }}</p>
+            <h6>Revenue by Room Type:</h6>
+            <ul>
+                {% for item in revenue_by_room_type %}
+                    <li>{{ item.room__room_type }}: ${{ item.revenue }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Customer Analytics -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title">Most Frequent Customers</h5>
+        </div>
+        <div class="card-body">
+            <ul>
+                {% for customer in most_frequent_customers %}
+                    <li>{{ customer.guest_name }} ({{ customer.total_bookings }} bookings)</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Booking History Over Time -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title">Booking History Over Time</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="bookingHistoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+<!-- Include Chart.js for Booking History Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('bookingHistoryChart').getContext('2d');
+    const bookingHistoryChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [{% for item in bookings_over_time %}'Month {{ item.month }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Bookings per Month',
+                data: [{% for item in bookings_over_time %}{{ item.total }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 2,
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Number of Bookings'
+                    }
+                }
+            }
+        }
+    });
+</script>

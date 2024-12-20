@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Welcome - Hotel Management{% endblock %}
+
+{% block content %}
+<div class="hero-section text-white text-center py-5 animate__animated animate__fadeInUp" 
+    style="background: url('{% static 'images/hero-bg.jpg' %}') no-repeat center center/cover; height: 60vh;">
+    <div class="d-flex flex-column justify-content-center align-items-center h-100">
+        <h1 class="display-4 fw-bold animate__animated animate__fadeInUp">Welcome to Hotel Management</h1>
+        <p class="lead mt-3 animate__animated animate__fadeInUp">Simplifying hotel operations with efficient tools.</p>
+        <a href="{% url 'core:room_list' %}" class="btn btn-primary btn-lg mt-4 animate__animated animate__fadeInUp">Get Started</a>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2>Why Choose Us?</h2>
+        <p class="text-muted">We provide tools to efficiently manage your hotel operations.</p>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <img src="{% static 'images/rooms.jpg' %}" class="card-img-top img-fluid" alt="Rooms Management">
+                <div class="card-body">
+                    <h5 class="card-title">Rooms Management</h5>
+                    <p class="card-text">Organize and manage your rooms efficiently with ease.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <img src="{% static 'images/bookings.jpg' %}" class="card-img-top img-fluid" alt="Bookings">
+                <div class="card-body">
+                    <h5 class="card-title">Bookings</h5>
+                    <p class="card-text">Track and manage bookings seamlessly with our platform.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <img src="{% static 'images/reports.jpg' %}" class="card-img-top img-fluid" alt="Reports">
+                <div class="card-body">
+                    <h5 class="card-title">Reports & Analytics</h5>
+                    <p class="card-text">Get insights and reports to make data-driven decisions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center py-5 bg-light">
+    <h3 class="fw-semibold animate__animated animate__fadeInUp">Ready to streamline your hotel operations?</h3>
+    <a href="{% url 'core:room_list' %}" class="btn btn-success btn-lg mt-3 animate__animated animate__fadeInUp">Start Now</a>
+</div>
+{% endblock %}

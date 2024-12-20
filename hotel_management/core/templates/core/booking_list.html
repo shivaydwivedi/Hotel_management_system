@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Booking List - Hotel Management{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="fw-bold mb-4 animate__animated animate__fadeInUp">Booking List</h1>
+
+    <!-- Filter Form -->
+    <div class="card mb-4 animate__animated animate__fadeInUp">
+        <div class="card-header">
+            <h5>Filter Bookings</h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" class="mb-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <input type="text" name="guest_name" class="form-control" placeholder="Guest Name" value="{{ guest_name }}">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" name="check_in_date" class="form-control" placeholder="Check-In Date" value="{{ check_in_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" name="check_out_date" class="form-control" placeholder="Check-Out Date" value="{{ check_out_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="status" class="form-control">
+                            <option value="">Status</option>
+                            <option value="Confirmed" {% if status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                            <option value="Cancelled" {% if status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            <option value="Completed" {% if status == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 text-center mt-2">
+                        <button type="submit" class="btn btn-outline-primary">Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Booking List -->
+    <div id="booking-list">
+        {% if bookings %}
+        <div class="row">
+            {% for booking in bookings %}
+                <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">Booking for {{ booking.guest_name }}</h5>
+                            <p class="card-text">
+                                <strong>Room:</strong> Room {{ booking.room.name }}<br>
+                                <strong>Check-In:</strong> {{ booking.check_in_date }}<br>
+                                <strong>Check-Out:</strong> {{ booking.check_out_date }}<br>
+                                <strong>Status:</strong> 
+                                <span class="badge {% if booking.status == 'Confirmed' %}bg-success{% elif booking.status == 'Cancelled' %}bg-danger{% else %}bg-info{% endif %}">{{ booking.status }}</span><br>
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'core:booking_update' booking.pk %}" class="btn btn-outline-warning btn-sm">Edit</a>
+                                <a href="{% url 'core:booking_delete' booking.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            No bookings found matching your filters.
+        </div>
+        {% endif %}
+
+        <!-- Pagination -->
+        <div class="text-center mt-4">
+            <div class="pagination">
+                {% for page_num in bookings.paginator.page_range %}
+                    <a href="?page={{ page_num }}&guest_name={{ guest_name }}&check_in_date={{ check_in_date }}&check_out_date={{ check_out_date }}&status={{ status }}" class="page-link {% if bookings.number == page_num %}active{% endif %}">
+                        {{ page_num }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% block title %}Room Details{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h1 class="fw-bold">Room {{ room.number }}</h1>
+    <p><strong>Type:</strong> {{ room.type }}</p>
+    <p><strong>Status:</strong> {{ room.status }}</p>
+    <p><strong>Additional Info:</strong> {{ room.description }}</p>
+    <a href="{% url 'core:room_list' %}" class="btn btn-primary">Back to List</a>
+</div>
+{% endblock %}

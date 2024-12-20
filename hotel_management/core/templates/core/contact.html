@@ -1,0 +1,47 @@
+<!-- contact.html -->
+{% extends 'core/base.html' %}
+
+{% block title %}Contact Us - Hotel Management{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Contact Us</h1>
+
+    <div class="row">
+        <!-- Contact Information Section -->
+        <div class="col-md-6">
+            <h3 class="mb-3">Our Location</h3>
+            <p><strong>Shivay Dwivedi Office</strong></p>
+            <p>IET Sitapur</p>
+            <p><strong>Phone:</strong> +91 8081707234</p>
+            <p><strong>Email:</strong> contact@shivayd1510@gmail.com</p>
+            <p>Feel free to reach out to us with any questions, or stop by our office for a personal tour!</p>
+        </div>
+
+        <!-- Contact Form Section -->
+        <div class="col-md-6">
+            <h3 class="mb-3">Send Us a Message</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Your Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="message" class="form-label">Your Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="4" placeholder="Write your message here" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

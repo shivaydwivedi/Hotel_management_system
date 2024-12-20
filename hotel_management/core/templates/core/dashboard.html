@@ -1,0 +1,107 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - Hotel Management{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="fw-bold mb-4 animate__animated animate__fadeInUp">Dashboard</h1>
+
+    <!-- Metrics Section -->
+    <div class="row text-center mb-4">
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h4 class="fw-bold">{{ total_rooms }}</h4>
+                    <p>Total Rooms</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h4 class="fw-bold">{{ available_rooms }}</h4>
+                    <p>Available Rooms</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h4 class="fw-bold">{{ booked_rooms }}</h4>
+                    <p>Booked Rooms</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h4 class="fw-bold">{{ revenue }}</h4>
+                    <p>Revenue</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Distribution Chart -->
+    <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeInUp">
+        <div class="card-body">
+            <h5 class="card-title">Room Type Distribution</h5>
+            <canvas id="roomTypeChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card shadow-sm border-0 animate__animated animate__fadeInUp">
+        <div class="card-body">
+            <h5 class="card-title">Recent Activity</h5>
+            <ul class="list-group">
+                {% for activity in recent_activity %}
+                <li class="list-group-item">
+                    Room {{ activity.room.number }} - {{ activity.action }} on {{ activity.timestamp }}
+                </li>
+                {% endfor %}
+                {% if recent_activity|length == 0 %}
+                <li class="list-group-item text-muted">No recent activity</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('roomTypeChart').getContext('2d');
+    const roomTypeChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Single', 'Double', 'Suite'],
+            datasets: [{
+                label: 'Room Type Distribution',
+                data: [{{ single_rooms }}, {{ double_rooms }}, {{ suite_rooms }}],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107'],
+                hoverBackgroundColor: ['#0056b3', '#218838', '#e0a800']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + ' rooms';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

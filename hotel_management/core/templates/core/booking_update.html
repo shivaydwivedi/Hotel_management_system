@@ -1,0 +1,97 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Update Booking - Hotel Management{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="fw-bold mb-4 animate__animated animate__fadeInUp">Update Booking for {{ booking.guest_name }}</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="mb-3">
+                    <label for="guest_name" class="form-label">Guest Name</label>
+                    <input type="text" name="guest_name" id="guest_name" class="form-control" required value="{{ booking.guest_name }}">
+                    {% if form.guest_name.errors %}
+                        <div class="text-danger">
+                            {% for error in form.guest_name.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="mb-3">
+                    <label for="room" class="form-label">Select Room</label>
+                    <select name="room" id="room" class="form-control" required>
+                        <option value="">Choose Room</option>
+                        {% for room in rooms %}
+                            <option value="{{ room.id }}" {% if booking.room.id == room.id %}selected{% endif %}>Room {{ room.name }} - {{ room.room_type }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if form.room.errors %}
+                        <div class="text-danger">
+                            {% for error in form.room.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="mb-3">
+                    <label for="check_in_date" class="form-label">Check-In Date</label>
+                    <input type="date" name="check_in_date" id="check_in_date" class="form-control" required value="{{ booking.check_in_date }}">
+                    {% if form.check_in_date.errors %}
+                        <div class="text-danger">
+                            {% for error in form.check_in_date.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="mb-3">
+                    <label for="check_out_date" class="form-label">Check-Out Date</label>
+                    <input type="date" name="check_out_date" id="check_out_date" class="form-control" required value="{{ booking.check_out_date }}">
+                    {% if form.check_out_date.errors %}
+                        <div class="text-danger">
+                            {% for error in form.check_out_date.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="mb-3">
+                    <label for="status" class="form-label">Booking Status</label>
+                    <select name="status" id="status" class="form-control" required>
+                        <option value="Confirmed" {% if booking.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                        <option value="Cancelled" {% if booking.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                        <option value="Completed" {% if booking.status == 'Completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                    {% if form.status.errors %}
+                        <div class="text-danger">
+                            {% for error in form.status.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-12 text-center mb-4 animate__animated animate__fadeInUp">
+                <button type="submit" class="btn btn-primary">Update Booking</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
